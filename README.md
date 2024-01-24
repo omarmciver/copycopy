@@ -4,7 +4,7 @@ This project provides an easy way to share clipboard content across multiple mac
 
 ## Features
 
-- Copy and paste text across multiple machines
+- Copy and paste text across multiple machines (encrypted in transit)
 - Simple, easy-to-use web interface
 - Built with Node.js for cross-platform compatibility
 
@@ -43,6 +43,8 @@ These instructions will get you a copy of the project up and running on your loc
 Now, you can access the application at `http://localhost:3000`.
 
 ## Usage
+
+You must enter a password which is used for encryption in POST-ing and GET-ing the content from different machines. This prevents someone spying on you pastes if the service is exposed on an external URL (in which case they could just keep GET-ing to see what you were POST-ing).
 
 In your first browser window, use the Paste button (or simply Ctrl+V) to paste text into the clipboard.
 

@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run start:css && nodemon --watch 'src/**' --exec 'ts-node' src/index.ts",
-    "start:css": "npx postcss ./src/public/styles.css -o ./src/public/output.css",
-    "build": "tsc && ncp ./src/public ./dist/public && npm run build:css",
-    "build:css": "npx postcss ./dist/public/styles.css -o ./dist/public/output.css",
+    "start": "nodemon --watch 'src/**' --exec 'ts-node' src/index.ts",
+    "build": "tsc && ncp ./src/public ./dist/public",
     "serve": "node dist/index.js"
   },
   "keywords": [],

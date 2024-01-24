@@ -1,20 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" class>
+<html lang="en">
     <head>
-        <title>CopyCopy</title>
-        <link href="/output.css" rel="stylesheet">
+        <title>CopyCopy by Omar McIver</title>
         <link
             href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
             rel="stylesheet">
     </head>
-    <body class="bg-black">
-        <div class="container mx-auto p-4 h-screen">
-            <textarea id="inputBox" onchange="postText()"
-                class="w-full h-40 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    <body class="bg-black text-white">
+        <div class="container mx-auto p-4 h-screen flex flex-col">
+            <div class="p-4">
+                <img
+                    src="https://avatars.githubusercontent.com/u/56705059?v=4"
+                    alt="Omar McIver" class="w-10" />
+                <a href="https://github.com/omarmciver/copycopy"
+                    class="text-blue-500 hover:text-blue-700">CopyCopy</a> by
+                <a href="https://github.com/omarmciver"
+                    class="text-blue-500 hover:text-blue-700">Omar McIver</a>
+            </div>
             <button onclick="pasteText()"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4  mb-4 rounded w-full">Paste</button>
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 mb-4 rounded w-full">Paste</button>
             <button onclick="copyText()"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded w-full">Copy</button>
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 mb-4 rounded w-full">Copy</button>
+            <textarea id="inputBox" onchange="postText()" readonly
+                class="flex-grow w-full bg-black text-white p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
         </div>
         <script>
         const inputBox = document.getElementById('inputBox');

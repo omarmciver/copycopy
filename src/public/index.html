@@ -17,6 +17,9 @@
                 <a href="https://github.com/omarmciver"
                     class="text-blue-500 hover:text-blue-700">Omar McIver</a>
             </div>
+            <input type="password" id="password"
+                class="w-full bg-black text-white p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Password">
             <button onclick="pasteText()"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 mb-4 rounded w-full">Paste</button>
             <button onclick="copyText()"
@@ -26,22 +29,67 @@
         </div>
         <script>
         const inputBox = document.getElementById('inputBox');
+        const password = () => document.getElementById('password');
 
-        function postText() {
+
+        async function encrypt(text, password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const key = await window.crypto.subtle.importKey(
+                'raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+            );
+            const derivedKey = await window.crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: encoder.encode('salt'), iterations: 1000, hash: 'SHA-256' },
+                key, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+            );
+            const encrypted = await window.crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: encoder.encode('iv') }, derivedKey, data
+            );
+            return window.btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+        }
+
+        async function decrypt(text, password) {
+            const encoder = new TextEncoder();
+            const data = Uint8Array.from(window.atob(text), c => c.charCodeAt(0));
+            const key = await window.crypto.subtle.importKey(
+                'raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+            );
+            const derivedKey = await window.crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: encoder.encode('salt'), iterations: 1000, hash: 'SHA-256' },
+                key, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+            );
+            const decrypted = await window.crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: encoder.encode('iv') }, derivedKey, data
+            );
+            return new TextDecoder().decode(decrypted);
+        }
+
+        async function postText() {
+            if(password().value === '') 
+            {
+                alert('Will not sync! Please enter a password'); 
+                return;
+            }
+            const encrypted = await encrypt(inputBox.value, password().value);
             fetch('/clipboard', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ text: inputBox.value }),
+                body: JSON.stringify({ text: encrypted }),
             });
         }
 
-        function getText() {
+        async function getText() {
+            if(password().value === '') 
+            {
+                alert('Will not sync! Please enter a password'); 
+                return;
+            }
             fetch('/clipboard')
                 .then(response => response.json())
-                .then(data => {
-                    inputBox.value = data.text;
+                .then(async data => {
+                    inputBox.value = await decrypt(data.text, password().value);
                 });
         }
 
